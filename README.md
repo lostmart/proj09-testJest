@@ -10,7 +10,7 @@ Its made of two parts back and front-end
 
 I am supposed to debbug and test the front-end
 
-Clonez le projet backend dans le dossier bill-app :
+Backend projet:
 
 ```
 $ git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
