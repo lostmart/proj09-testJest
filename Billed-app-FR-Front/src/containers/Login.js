@@ -47,7 +47,6 @@ export default class Login {
 	}
 
 	handleSubmitAdmin = (e) => {
-		console.log('running submit ...')
 		e.preventDefault()
 		const user = {
 			type: 'Admin',
