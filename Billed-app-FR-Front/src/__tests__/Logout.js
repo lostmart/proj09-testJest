@@ -44,10 +44,10 @@ describe('Given I am connected', () => {
 			)
 			document.body.innerHTML = DashboardUI({ bills })
 			const logout = new Logout({ document, onNavigate, localStorage })
-			const handleClick = jest.fn(logout.handleClick)
+			const handleClick = jest.spyOn(logout, 'handleClick')
 
 			const disco = screen.getByTestId('layout-disconnect')
-			disco.addEventListener('click', handleClick)
+			// disco.addEventListener('click', handleClick)
 			userEvent.click(disco)
 			expect(handleClick).toHaveBeenCalled()
 			expect(screen.getByText('Administration')).toBeTruthy()

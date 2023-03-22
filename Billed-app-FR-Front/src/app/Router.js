@@ -73,7 +73,7 @@ export default () => {
 
   if (window.location.pathname === "/" && window.location.hash === "") {
     new Login({ document, localStorage, onNavigate, PREVIOUS_LOCATION, store })
-    document.body.style.backgroundColor="#0E5AE5"
+    document.body.style.backgroundColor="#clezar"
   } else if (window.location.hash !== "") {
     if (window.location.hash === ROUTES_PATH['Bills']) {
       rootDiv.innerHTML = ROUTES({ pathname: window.location.hash, loading: true })

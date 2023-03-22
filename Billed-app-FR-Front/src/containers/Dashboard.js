@@ -140,8 +140,10 @@ export default class {
 	}
 
 	handleShowTickets(e, bills, index) {
+		console.log(bills)
 		if (this.counter === undefined || this.index !== index) this.counter = 0
 		if (this.index === undefined || this.index !== index) this.index = index
+
 		if (this.counter % 2 === 0) {
 			$(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)' })
 			$(`#status-bills-container${this.index}`).html(
@@ -154,10 +156,12 @@ export default class {
 			this.counter++
 		}
 
+		// only run if div next to status-bills-container is clicked
 		bills.forEach((bill) => {
 			$(`#open-bill${bill.id}`).click((e) => {
-				console.log(e)
-				return this.handleEditTicket(e, bill, bills)
+				if (e.target.closest(`#status-bills-container${index}`)) {
+					this.handleEditTicket(e, bill, bills)
+				}
 			})
 		})
 
