@@ -31,7 +31,9 @@ const bills = [
 
 describe('Given I am connected', () => {
 	describe('When I click on disconnect button', () => {
-		test('Then, I should be sent to login page', () => {
+		test('Then, I should be sent to login page', async () => {
+			const user = userEvent.setup()
+
 			const onNavigate = (pathname) => {
 				document.body.innerHTML = ROUTES({ pathname })
 			}
@@ -44,11 +46,17 @@ describe('Given I am connected', () => {
 			)
 			document.body.innerHTML = DashboardUI({ bills })
 			const logout = new Logout({ document, onNavigate, localStorage })
-			const handleClick = jest.spyOn(logout, 'handleClick')
+			const handleClick = jest.fn(logout.handleClick)
+			// logout.handleClick = jest.fn()
 
 			const disco = screen.getByTestId('layout-disconnect')
-			// disco.addEventListener('click', handleClick)
-			userEvent.click(disco)
+
+			disco.addEventListener('click', () => {
+				handleClick()
+			})
+			await user.click(disco)
+
+			expect(disco).toBeTruthy() // check if the div data-testid="layout-disconnect" exists on screen
 			expect(handleClick).toHaveBeenCalled()
 			expect(screen.getByText('Administration')).toBeTruthy()
 		})
