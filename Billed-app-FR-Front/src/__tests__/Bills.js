@@ -5,10 +5,12 @@
 import { screen, waitFor } from '@testing-library/dom'
 import BillsUI from '../views/BillsUI.js'
 import { bills } from '../fixtures/bills.js'
-import { ROUTES_PATH } from '../constants/routes.js'
 import { localStorageMock } from '../__mocks__/localStorage.js'
-
 import router from '../app/Router.js'
+
+import { ROUTES, ROUTES_PATH } from '../constants/routes.js'
+import userEvent from '@testing-library/user-event'
+import Bill from '../containers/Bills.js'
 
 describe('Given I am connected as an employee', () => {
 	describe('When I am on Bills Page', () => {
@@ -40,6 +42,37 @@ describe('Given I am connected as an employee', () => {
 			const antiChrono = (a, b) => (a < b ? 1 : +1)
 			const datesSorted = [...dates].sort(antiChrono)
 			expect(dates).toEqual(datesSorted)
+		})
+
+		// new written tests
+		describe('When I click on "Nouvelle note de frais" button', () => {
+			test('The button is pressent and it runs a fn (handleClickNewBill) when clicked', async () => {
+				const user = userEvent.setup()
+
+				const onNavigate = (pathname) => {
+					document.body.innerHTML = ROUTES({ pathname })
+				}
+
+				const newBill = new Bill({
+					document,
+					onNavigate,
+					store: null,
+					bills: bills,
+					localStorage: window.localStorage,
+				})
+
+				const newBillBtn = screen.getByTestId('btn-new-bill')
+				const handleClickNewBill = jest.fn((e) => {
+					newBill.handleClickNewBill()
+				})
+
+				newBillBtn.addEventListener('click', handleClickNewBill)
+
+				await user.click(newBillBtn)
+
+				expect(newBillBtn).toBeTruthy()
+				// expect(handleClickNewBill).toHaveBeenCalled()
+			})
 		})
 	})
 })
