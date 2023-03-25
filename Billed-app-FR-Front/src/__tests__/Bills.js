@@ -49,6 +49,15 @@ describe('Given I am connected as an employee', () => {
 			test('The button is pressent and it runs a fn (handleClickNewBill) when clicked', async () => {
 				const user = userEvent.setup()
 
+				const $ = require('jquery')
+
+				$.fn.modal = jest.fn()
+
+				const icon = document.createElement('div')
+				const billImg = '../assets/images/facturefreemobile.jpg'
+				icon.setAttribute('data-testid', 'icon-eye')
+				icon.setAttribute('data-bill-url', billImg)
+
 				const onNavigate = (pathname) => {
 					document.body.innerHTML = ROUTES({ pathname })
 				}
@@ -62,16 +71,29 @@ describe('Given I am connected as an employee', () => {
 				})
 
 				const newBillBtn = screen.getByTestId('btn-new-bill')
-				const handleClickNewBill = jest.fn((e) => {
+				const iconEyeElements = screen.getAllByTestId('icon-eye')
+
+				// methods to be tested
+				const handleClickNewBill = jest.fn(() => {
 					newBill.handleClickNewBill()
+				})
+
+				const handleClickIconEye = jest.fn(() => {
+					newBill.handleClickIconEye(icon)
 				})
 
 				newBillBtn.addEventListener('click', handleClickNewBill)
 
+				iconEyeElements.forEach(async (iconEye) => {
+					// console.log(iconEye)
+					iconEye.addEventListener('click', handleClickIconEye)
+					await user.click(iconEye)
+					expect(handleClickIconEye).toHaveBeenCalled()
+				})
+
 				await user.click(newBillBtn)
 
 				expect(newBillBtn).toBeTruthy()
-				// expect(handleClickNewBill).toHaveBeenCalled()
 			})
 		})
 	})
