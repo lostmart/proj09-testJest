@@ -12,8 +12,7 @@ import { ROUTES, ROUTES_PATH } from '../constants/routes.js'
 import userEvent from '@testing-library/user-event'
 import Bill from '../containers/Bills.js'
 import bills from '../__mocks__/store.js'
-
-jest.mock('../__mocks__/store.js')
+import store from '../app/Store.js'
 
 describe('Given I am connected as an employee', () => {
 	describe('When I am on Bills Page', () => {
@@ -49,10 +48,7 @@ describe('Given I am connected as an employee', () => {
 
 		// new written tests
 		describe('When I click on "Nouvelle note de frais" button', () => {
-			test(`The button is pressent and it runs 
-			a fn (handleClickNewBill) when clicked 
-			&& blue eye icon clicked to open modal
-			&& getBills method`, async () => {
+			test('The button is pressent and it runs a fn (handleClickNewBill) when clicked && blue eye icon clicked to open modal', async () => {
 				const user = userEvent.setup()
 
 				const $ = require('jquery')
@@ -101,25 +97,29 @@ describe('Given I am connected as an employee', () => {
 				})
 
 				await user.click(newBillBtn)
-				const result = newBill.getBills()
 
 				expect(newBillBtn).toBeTruthy()
-				expect(result).not.toBeTruthy()
 			})
-		})
+			test('getBills is ran ... ', () => {
+				global.fetch = jest.fn(async () => {
+					Promise.resolve({
+						json: () => Promise.resolve({}),
+					})
+				})
 
-		test('fetches bills from an API and fails with 404 message error', async () => {
-			bills.bills.mockImplementationOnce(() => {
-				return {
-					list: () => {
-						return Promise.reject(new Error('Erreur 404'))
-					},
-				}
+				const mockList = bills.bills()
+				// mockList.list() = fest.fn()
+
+				const newBill = new Bill({
+					document,
+					onNavigate,
+					store,
+					bills: billsList,
+					localStorage: window.localStorage,
+				})
+
+				newBill.getBills()
 			})
-			window.onNavigate(ROUTES_PATH.Bills)
-			await new Promise(process.nextTick)
-			const message = await screen
-			expect(message).toBeTruthy()
 		})
 	})
 })

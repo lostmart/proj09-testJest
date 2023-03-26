@@ -63,6 +63,8 @@ export default class {
 					// console.log(bills)
 					return bills
 				})
+		} else {
+			return false
 		}
 	}
 }
