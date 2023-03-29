@@ -17,20 +17,22 @@ export default class NewBill {
 		this.billId = null
 		new Logout({ document, localStorage, onNavigate })
 	}
-	handleChangeFile = (e) => {
+	handleChangeFile = async (e) => {
 		e.preventDefault()
 		const file = this.document.querySelector(`input[data-testid="file"]`)
 			.files[0]
+		const filePath = e.target.value.split(/\\/g)
+		const fileName = filePath[filePath.length - 1]
+		const formData = new FormData()
+		const email = JSON.parse(localStorage.getItem('user')).email
+		formData.append('file', file)
+		formData.append('email', email)
 
-		// check file type
-		if (this.checkImage(file.type)) {
-			const filePath = e.target.value.split(/\\/g)
-			const fileName = filePath[filePath.length - 1]
-			const formData = new FormData()
-			const email = JSON.parse(localStorage.getItem('user')).email
-			formData.append('file', file)
-			formData.append('email', email)
-
+		if (
+			e.target.value.includes('jpeg') ||
+			e.target.value.includes('jpg') ||
+			e.target.value.includes('png')
+		) {
 			this.store
 				.bills()
 				.create({
@@ -40,26 +42,19 @@ export default class NewBill {
 					},
 				})
 				.then(({ fileUrl, key }) => {
-					console.log(fileUrl)
 					this.billId = key
 					this.fileUrl = fileUrl
 					this.fileName = fileName
+					console.log(fileUrl, fileName)
 				})
 				.catch((error) => console.error(error))
 		} else {
-			document.querySelector('form').reset()
-			alert('only jpeg, jpg or png files accepted ...')
-		}
-	}
-	checkImage = (fileType) => {
-		if (
-			fileType === 'image/jpeg' ||
-			fileType === 'image/jpg' ||
-			fileType === 'image/png'
-		) {
-			return true
-		} else {
-			return false
+			let errorMessage = document.createElement('p')
+			errorMessage.classList.add('text-danger', 'h6')
+			errorMessage.setAttribute('data-testid', 'errorMessage')
+			errorMessage.innerText =
+				'Vous devez choisir un fichier au format .jpg, .jpeg ou .png'
+			e.target.parentNode.append(errorMessage)
 		}
 	}
 	handleSubmit = (e) => {
