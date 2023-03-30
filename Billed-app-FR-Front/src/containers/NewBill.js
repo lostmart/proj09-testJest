@@ -28,11 +28,7 @@ export default class NewBill {
 		formData.append('file', file)
 		formData.append('email', email)
 
-		if (
-			e.target.value.includes('jpeg') ||
-			e.target.value.includes('jpg') ||
-			e.target.value.includes('png')
-		) {
+		if (this.checkImage(e.target.value)) {
 			this.store
 				.bills()
 				.create({
@@ -49,12 +45,14 @@ export default class NewBill {
 				})
 				.catch((error) => console.error(error))
 		} else {
-			let errorMessage = document.createElement('p')
+			const form = document.querySelector('[data-testid="form-new-bill"]')
+			const errorMessage = document.createElement('p')
 			errorMessage.classList.add('text-danger', 'h6')
 			errorMessage.setAttribute('data-testid', 'errorMessage')
 			errorMessage.innerText =
 				'Vous devez choisir un fichier au format .jpg, .jpeg ou .png'
 			e.target.parentNode.append(errorMessage)
+			form.reset()
 		}
 	}
 	handleSubmit = (e) => {
@@ -96,6 +94,22 @@ export default class NewBill {
 					this.onNavigate(ROUTES_PATH['Bills'])
 				})
 				.catch((error) => console.error(error))
+		}
+	}
+
+	checkImage(billFile) {
+		document.querySelector('[data-testid="data-testid"]')
+		if (
+			billFile.includes('jpeg') ||
+			billFile.includes('jpg') ||
+			billFile.includes('png')
+		) {
+			if (document.querySelector('[data-testid="errorMessage"]')) {
+				document.querySelector('[data-testid="errorMessage"]').remove()
+			}
+			return true
+		} else {
+			return false
 		}
 	}
 }
