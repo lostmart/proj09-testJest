@@ -10,8 +10,8 @@ import store from '../__mocks__/store'
 import mockStore from '../__mocks__/store'
 import NewBillUI from '../views/NewBillUI.js'
 import NewBill from '../containers/NewBill.js'
-import BillsUI from '../views/BillsUI.js'
-import router from '../app/Router.js'
+import userEvent from '@testing-library/user-event'
+import { faultyPosts } from '../__mocks__/api_post-errors.js'
 
 jest.mock('../app/store', () => mockStore)
 
@@ -137,7 +137,34 @@ describe('Given I am connected as an employee', () => {
 			expect(handleSubmit).toHaveBeenCalled()
 			expect(newBill.updateBill).toHaveBeenCalled()
 		})
+
+		test("throws a 404 error if the API returns can't endpoint ", async () => {
+			// Set up the mock response object with an error status
+			const mockResponse = {
+				status: 404,
+				json: jest.fn(),
+			}
+
+			// Set up the mock fetch function
+			global.fetch = jest.fn().mockResolvedValue(mockResponse)
+
+			// Call the function that makes the fetch request
+			await expect(faultyPosts.create()).rejects.toThrow('404')
+			// Expect the json function on the mock response object not to have been called
+			expect(mockResponse.json).not.toHaveBeenCalled()
+		})
+
+		test('throws a 500 error if the API returns an error ', async () => {
+			// Set up the mock response object with an error status
+			const mockResponse = {
+				status: 500,
+				json: jest.fn(),
+			}
+
+			// Set up the mock fetch function
+			global.fetch = jest.fn().mockResolvedValue(mockResponse)
+			await expect(faultyPosts.create_500()).rejects.toThrow('500')
+			expect(mockResponse.json).not.toHaveBeenCalled()
+		})
 	})
 })
-
-describe('Given I am a user connected as Employee', () => {})

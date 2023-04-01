@@ -41,7 +41,7 @@ export default class NewBill {
 					this.billId = key
 					this.fileUrl = fileUrl
 					this.fileName = fileName
-					console.log(fileUrl, fileName)
+					// console.log(fileUrl, fileName)
 				})
 				.catch((error) => console.error(error))
 		} else {
@@ -57,10 +57,12 @@ export default class NewBill {
 	}
 	handleSubmit = (e) => {
 		e.preventDefault()
+		/*
 		console.log(
 			'e.target.querySelector(`input[data-testid="datepicker"]`).value',
 			e.target.querySelector(`input[data-testid="datepicker"]`).value
 		)
+		*/
 		const email = JSON.parse(localStorage.getItem('user')).email
 		const bill = {
 			email,
