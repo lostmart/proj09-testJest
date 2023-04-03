@@ -13,9 +13,18 @@ export default class {
 		if (buttonNewBill)
 			buttonNewBill.addEventListener('click', this.handleClickNewBill)
 		const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
+		const iconDownload = document.querySelectorAll(
+			`div[data-testid="icon-download"]`
+		)
 		if (iconEye)
 			iconEye.forEach((icon) => {
 				icon.addEventListener('click', () => this.handleClickIconEye(icon))
+			})
+		if (iconDownload)
+			iconDownload.forEach((down_icon) => {
+				down_icon.addEventListener('click', () =>
+					this.handleClickDownload(down_icon)
+				)
 			})
 		new Logout({ document, localStorage, onNavigate })
 	}
@@ -25,8 +34,8 @@ export default class {
 	}
 
 	handleClickIconEye = (icon) => {
-		// console.log(icon)
 		const billUrl = icon.getAttribute('data-bill-url')
+		// console.log(billUrl)
 		const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
 		$('#modaleFile')
 			.find('.modal-body')
@@ -66,5 +75,10 @@ export default class {
 		} else {
 			return false
 		}
+	}
+
+	handleClickDownload = (icon) => {
+		const billUrl = icon.getAttribute('data-bill-url')
+		console.log('running download img wxith the following file ' + billUrl)
 	}
 }
